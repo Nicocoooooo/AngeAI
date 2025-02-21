@@ -1,0 +1,252 @@
+## Table des matières
+1. [Vue d'ensemble](#vue-densemble)
+2. [Architecture technique](#architecture-technique)
+3. [Choix techniques](#choix-techniques)
+4. [État actuel du projet](#état-actuel-du-projet)
+5. [Guide de développement](#guide-de-développement)
+6. [Prochaines étapes](#prochaines-étapes)
+
+## Vue d'ensemble
+
+AngeAI est une interface web permettant d'interagir avec différents modèles d'IA, en commençant par Claude 3.5 Sonnet. Le projet vise à reproduire l'expérience utilisateur de Claude tout en offrant plus de flexibilité dans l'utilisation des modèles d'IA via leurs APIs respectives.
+
+### Objectifs principaux
+- Interface utilisateur similaire à Claude
+- Gestion sécurisée des clés API
+- Support multi-modèles
+- Expérience développeur optimisée
+
+## Architecture technique
+
+### Stack technique
+
+Frontend :
+├── Vite (Build tool)
+├── React 18 + TypeScript
+├── TailwindCSS (Styling)
+└── React Router (Navigation)
+Backend (Serverless) :
+└── Supabase
+├── Authentication
+├── PostgreSQL Database
+├── Row Level Security
+└── Realtime subscriptions
+
+### Structure des données Supabase
+```sql
+-- Tables principales
+api_keys
+  ├── id: uuid (PK)
+  ├── user_id: uuid (FK -> auth.users)
+  ├── provider: text
+  ├── key_encrypted: text
+  └── created_at: timestamp
+
+conversations
+  ├── id: uuid (PK)
+  ├── user_id: uuid (FK -> auth.users)
+  ├── title: text
+  ├── model: text
+  ├── created_at: timestamp
+  └── updated_at: timestamp
+
+messages
+  ├── id: uuid (PK)
+  ├── conversation_id: uuid (FK -> conversations)
+  ├── content: text
+  ├── role: text
+  └── created_at: timestamp
+
+Architecture des dossiers
+
+
+src/
+  ├── api/         # Services API
+  ├── components/  # Composants React
+  ├── config/      # Configuration
+  ├── contexts/    # Contexts React
+  ├── hooks/       # Custom hooks
+  ├── layouts/     # Layouts
+  ├── pages/       # Pages
+  ├── styles/      # Styles globaux
+  └── types/       # Types TypeScript
+
+
+Choix techniques
+Vite vs Create React App
+Nous avons choisi Vite pour :
+
+Performances de développement supérieures
+Support natif de TypeScript et des modules ES
+Configuration plus légère et moderne
+Hot Module Replacement (HMR) plus rapide
+
+Supabase comme Backend
+Avantages :
+
+Solution serverless complète
+Authentication intégrée
+Sécurité robuste (RLS)
+Temps réel natif
+Chiffrement des clés API
+
+Sécurité
+
+Row Level Security (RLS)
+
+Politiques par table
+Isolation des données par utilisateur
+Protection automatique
+
+
+Gestion des clés API
+
+Chiffrement côté Supabase
+Accès contrôlé par RLS
+Jamais exposées côté client
+
+
+
+État actuel du projet
+Sprint 0 (Complété)
+✅ Configuration initiale
+
+Repository GitHub
+Structure du projet
+Configuration TypeScript/ESLint
+
+✅ Setup Supabase
+
+Tables créées
+RLS configuré
+Authentification prête
+
+✅ Configuration frontend
+
+Vite configuré
+TailwindCSS intégré
+Providers en place
+
+Guide de développement
+Conventions de code
+
+Commits
+
+type: description courte
+
+Types :
+- feat: nouvelle fonctionnalité
+- fix: correction de bug
+- docs: documentation
+- refactor: refactoring
+- style: formatage
+
+TypeScript
+
+Types stricts obligatoires
+Pas de any
+Interfaces pour les props
+
+
+Components
+
+Un composant par fichier
+Props typées avec interface
+Hooks customs pour la logique
+
+
+
+Patterns à suivre
+
+Gestion d'état
+// Contexts pour l'état global
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Hooks pour la logique réutilisable
+const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
+  return context;
+};
+
+Composants
+interface ComponentProps {
+  prop1: string;
+  prop2?: number;
+}
+
+export const Component: React.FC<ComponentProps> = ({ prop1, prop2 }) => {
+  // Implementation
+};
+
+
+Prochaines étapes
+Sprint 1 : Architecture de base
+
+Pages d'authentification
+
+Login
+Register
+Reset password
+
+
+Layout principal
+
+Sidebar
+Zone de chat
+Header
+
+
+Tests à implémenter
+
+Tests unitaires composants
+Tests d'intégration auth
+
+
+
+Points de vigilance
+
+Sécurité
+
+Validation des inputs
+Protection XSS
+Sanitization des données
+
+
+Performance
+
+Lazy loading des composants
+Optimisation des requêtes Supabase
+Gestion du cache
+
+
+UX
+
+Feedback utilisateur
+États de chargement
+Gestion des erreurs
+
+
+
+Défis techniques à anticiper
+
+Gestion des clés API
+
+Stockage sécurisé
+Validation
+Rotation des clés
+
+
+Temps réel
+
+Optimisation des souscriptions
+Gestion de la latence
+Reconnexion automatique
+
+
+Multi-modèles
+
+Interface unifiée
+Gestion des différences d'API
+Validation spécifique par modèle
+EOL
