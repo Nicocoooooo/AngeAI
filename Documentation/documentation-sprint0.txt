@@ -249,4 +249,3 @@ Multi-modèles
 Interface unifiée
 Gestion des différences d'API
 Validation spécifique par modèle
-EOL
