@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import Sidebar from '../components/chat/Sidebar';
 
 const MainLayout = () => {
     const { user } = useAuth();
@@ -9,8 +10,8 @@ const MainLayout = () => {
     }
 
     return (
-        <div className="min-h-screen flex bg-background">
-            {/* Sidebar sera ajouté ici */}
+        <div className="flex min-h-screen bg-background">
+            <Sidebar />
             <main className="flex-1">
                 <Outlet />
             </main>
